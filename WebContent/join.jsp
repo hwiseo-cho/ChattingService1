@@ -10,6 +10,34 @@
 	<title>JSP Ajax 실시간 회원제 채팅 서비스</title>
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.js"></script>
+	<script type="text/javascript">
+	
+		function registerCheckFunction() {
+			var userId = $("#userId").val();
+			$.ajax({
+				type:"POST",
+				url:"./UserRegisterCheckServlet",
+				success: function(result) {
+					$("#checkMessage").html('사용할 수 있는 아이디 입니다.');
+					$("#checkType").attr("class", "model-content panel-success");
+				} else {
+					$("#checkMessage").html('사용할 수 없는 아이디 입니다.');
+					$("#checkType").attr("class", "model-content panel-warning");
+				}
+				$("#checkModal").modal("show");
+			});
+		}
+		
+		function passwordCheckFunction() {
+			var userPwd1 = $("#userPwd1").val();
+			var userPwd2 = $("#userPwd2").val();
+			if(userPwd1 != userPwd2) {
+				$("#passwordCheckMessage").html("비밀번호가 일치하지 않습니다.");
+			} else {
+				$("#passwordCheckMessage").html(" ");
+			}
+		}
+	</script>
 </head>
 <body>
 	<%
@@ -74,7 +102,7 @@
 					<tr>
 						<td style="width: 110px;"><h5>아이디</h5></td>
 						<td><input class="form-control" type="text" id="userId" name="userId" maxlength="20" placeholder="아이디를 입력하세요"></td>
-						<td style="width: 110px;"><button class="btn btn-primary" onclick="refisterCheckFunction();" type="button">중복체크</button></td>
+						<td style="width: 110px;"><button class="btn btn-primary" onclick="registerCheckFunction();" type="button">중복체크</button></td>
 					</tr>
 					<tr>
 						<td style="width: 110px;"><h5>비밀번호</h5></td>
@@ -114,6 +142,62 @@
 				</tbody>
 			</table>
 		</form>
+	</div>
+	<%
+		String messageContent = null;
+		if(session.getAttribute("messageContent") != null) {
+			messageContent = (String)session.getAttribute("messageType");
+		}
+		if(session.getAttribute("messageType") != null) {
+			messageContent = (String)session.getAttribute("messageType");
+		}
+	%>
+	<div class="modal fade" id="messageModal" tabindex="-1" role="diolog" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-content" <%-- <%if(messageType.equals("오류")) out.println("panel-warning");%> --%>>
+				<div class="modal-header panel-heading">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">$times</span>
+						<span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title">
+					</h4>
+				</div>
+				<div class="modal-body">
+					<%= messageContent %>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		$("#messageModal").modal("show");
+	</script>
+	<%
+		session.removeAttribute("messageContent");
+		session.removeAttribute("messageType");
+	%>
+	<div class="modal-fade" id="checkModal" tabindex="-1" role="diolog" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div id="checkType" class="modal-content panel-info">
+				<div class="modal-header panel-heading">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">$times</span>
+						<span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title">
+						확인 메세지
+					</h4>
+				</div>
+				<div id="checkMessage" class="modal-body">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 </html>
