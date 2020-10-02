@@ -42,16 +42,15 @@ public class UserRegisterServlet extends HttpServlet {
 			return;
 		}
 		int result = new UserDao().register(userId, userPwd1, name, age, gender, email, profile);
+		System.out.println(result);
 		if(result == 1) {
 			request.getSession().setAttribute("messageTpye", "성공");
 			request.getSession().setAttribute("messageContent", "회원가입성공");
 			response.sendRedirect("index.jsp");
-			return;
 		} else {
 			request.getSession().setAttribute("messageTpye", "오류 ");
 			request.getSession().setAttribute("messageContent", "이미 존재함");
 			response.sendRedirect("join.jsp");
-			return;
 		}
 				
 	}

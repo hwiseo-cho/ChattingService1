@@ -88,11 +88,11 @@ public class UserDao {
 	}
 	
 	public int register(String userId,String userPwd,String name,String age,String gender,String email,String profile) {
+		int result = 0;
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		String sql = "INSERT INTO CUSER VALUES(?,?,?,?,?,?,?)";
-		
 		try {
 			con = ds.getConnection();
 			pstmt = con.prepareStatement(sql);
@@ -103,13 +103,8 @@ public class UserDao {
 			pstmt.setString(5, gender);
 			pstmt.setString(6, email);
 			pstmt.setString(7, profile);
-			rset = pstmt.executeQuery();
-			
-			if(rset.next()) {
-				return 0;
-			} else {
-				return 1; // 가입가능한 아이디
-			}
+			result = pstmt.executeUpdate();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -121,7 +116,7 @@ public class UserDao {
 				e2.printStackTrace();
 			}
 		}
-		return -1;
+		return result;
 	}
 	
 }

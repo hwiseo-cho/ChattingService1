@@ -17,14 +17,17 @@
 			$.ajax({
 				type:"POST",
 				url:"./UserRegisterCheckServlet",
+				data:{userId:userId},
 				success: function(result) {
-					$("#checkMessage").html('사용할 수 있는 아이디 입니다.');
-					$("#checkType").attr("class", "model-content panel-success");
-				} else {
-					$("#checkMessage").html('사용할 수 없는 아이디 입니다.');
-					$("#checkType").attr("class", "model-content panel-warning");
+					if(result == 1) {
+						$("#checkMessage").html('사용할 수 있는 아이디 입니다.');
+						$("#checkType").attr("class", "model-content panel-success");
+					} else {
+						$("#checkMessage").html('사용할 수 없는 아이디 입니다.');
+						$("#checkType").attr("class", "model-content panel-warning");
+					}
+					$("#checkModal").modal("show");
 				}
-				$("#checkModal").modal("show");
 			});
 		}
 		
@@ -139,6 +142,9 @@
 						<td style="width: 110px;"><h5>이메일</h5></td>
 						<td colspan="2"><input class="form-control" type="text" id="email" name="email" maxlength="20" placeholder="이메일을 입력하세요"></td>
 					</tr>
+					<tr>
+						<td style="text-align:left;" colspan="3"><h5 style="color: red;" id="passwordCheckMessage"></h5><input class="btn btn-primary pull-right" type="submit" value="등록"></td>
+					</tr>
 				</tbody>
 			</table>
 		</form>
@@ -148,26 +154,31 @@
 		if(session.getAttribute("messageContent") != null) {
 			messageContent = (String)session.getAttribute("messageType");
 		}
+		String messageType = null;
 		if(session.getAttribute("messageType") != null) {
 			messageContent = (String)session.getAttribute("messageType");
 		}
+		if(messageContent != null) {
 	%>
 	<div class="modal fade" id="messageModal" tabindex="-1" role="diolog" aria-hidden="true">
 		<div class="vertical-alignment-helper">
-			<div class="modal-content" <%-- <%if(messageType.equals("오류")) out.println("panel-warning");%> --%>>
-				<div class="modal-header panel-heading">
-					<button type="button" class="close" data-dismiss="modal">
-						<span aria-hidden="true">$times</span>
-						<span class="sr-only">Close</span>
-					</button>
-					<h4 class="modal-title">
-					</h4>
-				</div>
-				<div class="modal-body">
-					<%= messageContent %>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
+			<div class="modal-diolog vertical-align-center">
+				<div class="modal-content" <%if(messageType.equals("오류")) out.println("panel-warning");%>>
+					<div class="modal-header panel-heading">
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">$times</span>
+							<span class="sr-only">Close</span>
+						</button>
+						<h4 class="modal-title">
+							<%= messageType %>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<%= messageContent %>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -178,23 +189,26 @@
 	<%
 		session.removeAttribute("messageContent");
 		session.removeAttribute("messageType");
+		}
 	%>
-	<div class="modal-fade" id="checkModal" tabindex="-1" role="diolog" aria-hidden="true">
+	<div class="modal fade" id="checkModal" tabindex="-1" role="diolog" aria-hidden="true">
 		<div class="vertical-alignment-helper">
-			<div id="checkType" class="modal-content panel-info">
-				<div class="modal-header panel-heading">
-					<button type="button" class="close" data-dismiss="modal">
-						<span aria-hidden="true">$times</span>
-						<span class="sr-only">Close</span>
-					</button>
-					<h4 class="modal-title">
-						확인 메세지
-					</h4>
-				</div>
-				<div id="checkMessage" class="modal-body">
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
+			<div class="modal-diolog vertical-align-center">
+				<div id="checkType" class="modal-content panel-info">
+					<div class="modal-header panel-heading">
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">&times</span>
+							<span class="sr-only">Close</span>
+						</button>
+						<h4 class="modal-title">
+							확인 메세지
+						</h4>
+					</div>
+					<div id="checkMessage" class="modal-body">
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
+					</div>
 				</div>
 			</div>
 		</div>
